@@ -36,7 +36,7 @@ function PlexService() {
     }
 
     function doExecute(action = "status") {
-        return execute('ls -al')
+        return execute("systemctl " + ACTIONS[action])
                 .then(output)
                 .catch(handleError);
     }
