@@ -2,7 +2,7 @@ const util = require("util");
 const { execSync } = require('child_process');
 const execute = execSync;
 
-const SERVICE_NAME = "openvpn.service" //plexmediaserver.service";
+const SERVICE_NAME = "plexmediaserver.service";
 
 const ARGS = {
     "status": ["is-active", SERVICE_NAME],
