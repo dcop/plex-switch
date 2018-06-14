@@ -1,11 +1,11 @@
 const util = require("util");
-const { exec } = require('child_process');
-const execute = util.promisify(exec);
+const { execSync } = require('child_process');
+const execute = execSync;
 
-const SERVICE_NAME = "plexmediaserver.service";
+const SERVICE_NAME = "openvpn.service" //plexmediaserver.service";
 
 const ARGS = {
-    "status": ["status", SERVICE_NAME],
+    "status": ["is-active", SERVICE_NAME],
     "enable": ["start", SERVICE_NAME],
     "disable": ["stop", SERVICE_NAME]
 }
@@ -32,21 +32,36 @@ function PlexService() {
     }
 
     function status () {
-        return doExecute('status');
+        const data = doExecute('status');
+
+        return {
+            active: isActive(data.value),
+            ...data
+        }
     }
 
     function doExecute(action = "status") {
-        return execute("systemctl " + ACTIONS[action])
-                .then(output)
-                .catch(handleError);
+        console.log("doExecute", action);
+
+        try {
+            // throws error on exit code !== 0
+            return { value: execute("systemctl " + ACTIONS[action]).toString().trim() };
+        } catch (err) {
+            return handleError(err);
+        }
     }
 
-    function output(stdout, stderr) {
-        return stderr || stdout;
+    function isActive(message = "") {
+        console.log("isActive", message);
+
+        return message === "active";
     }
 
-    function handleError(error) {
-        return error; 
+    function handleError(err) {
+        return { 
+            stderr: err.stderr.toString().trim(),
+            stdout: err.stdout.toString().trim()
+         }; 
     }
 }
 
