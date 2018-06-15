@@ -10,6 +10,15 @@ app.get("/", (req, res) => {
     res.send("Hello world!")
 });
 
+app.get("/api/plex", (req, res) => {
+    const service = plex();
+
+    res.send({
+        status: "OK",
+        message: service.status()
+    })
+});
+
 app.post("/api/plex", (req, res) => {
     const data = req.body;
     const service = plex();
