@@ -1,3 +1,9 @@
+/**
+ * This is my first nodejs attempt at creating a simple server to manage 
+ * my Plex service and use it as a switch in home-assistant:
+ * @link{https://www.home-assistant.io/components/switch.rest/}
+ */
+
 const express = require('express');
 const app = express();
 const plex = require('./plex');
@@ -10,6 +16,9 @@ app.get("/", (req, res) => {
     res.send("Hello world!")
 });
 
+/**
+ * Checks for status with GET
+ */
 app.get("/api/plex", (req, res) => {
     const service = plex();
 
@@ -19,26 +28,30 @@ app.get("/api/plex", (req, res) => {
     })
 });
 
+/**
+ * Changes status
+ */
 app.post("/api/plex", (req, res) => {
     const data = req.body;
     const service = plex();
+    const shouldEnable = data.activate === "true";
 
-    if(data.activate) {
-        // console.log("Enabling...")
+    // home assistant is sending a string rather than boolean
+    if(shouldEnable) {
         service.enable();
     } else {
-        // console.log("Disabling...")
         service.disable();
     }
 
-    // console.log("Status: ", service.status());
-
     res.send({ 
         status: "OK",
-        message: service.status() 
+        message: service.status(),
     });
 });
 
+/**
+ * All-in-one GET methods
+ */
 app.get("/api/plex/:action", (req, res) => {
     const action = req.params.action;
     const fn = plex();
@@ -57,6 +70,7 @@ app.get("/api/plex/:action", (req, res) => {
     }
 })
 
+// do I need to comment this? 
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 })

@@ -41,7 +41,7 @@ function PlexService() {
     }
 
     function doExecute(action = "status") {
-        console.log("doExecute", action);
+        // console.log("doExecute", action);
 
         try {
             // throws error on exit code !== 0
@@ -52,7 +52,7 @@ function PlexService() {
     }
 
     function isActive(message = "") {
-        console.log("isActive", message);
+        // console.log("isActive", message);
 
         return message === "active";
     }
